@@ -13,10 +13,10 @@ It is one of the lake's crypto pair, with
 [meridian-kraken](https://github.com/open-meridian/plugin-kraken): each runs the SDK's
 data suite and its checks for a pairs venue unchanged against its own conversion
 (meridian-design `plans/the-lake-prices-the-book.md`, rows 6 and 19); what the two do alike is
-the SDK's (`meridian.roles.data.pairs`, open-meridian 0.33.1), never copied
+the SDK's (`meridian.roles.data.pairs`, open-meridian 0.35.1), never copied
 between them.
 
-**Status.** 0.10.0, built on open-meridian 0.33.1 (contract v28: its feed delay reported, a crossed quote recorded invalid at the edge; contract v27: the stream's liveness recorded; the data suite's v27 cases; the book's depth kept raw, open question 232; its work the SDK's role helpers), holding the
+**Status.** 0.11.0, built on open-meridian 0.35.1 (contract v29; from 0.11.0 its work is one class for its role, `Lake` -- the SDK's pairs feed -- registered with `meridian.run`, its stream kept open by the SDK's supervisor; contract v28: its feed delay reported, a crossed quote recorded invalid at the edge; contract v27: the stream's liveness recorded; the data suite's v27 cases; the book's depth kept raw, open question 232; its work the SDK's role helpers), holding the
 role `data`.
 
 ## What it does
@@ -118,7 +118,9 @@ Three datasets, declared from code in its catalogue (`declaration.py`):
   far more than its trades: an admin sizes the raw responses' window for it.
 - **Kept open, with no gap.** A stream that drops, or says nothing for 30
   seconds, is opened again after a wait doubling from one second to a
-  minute; each time it opens, the trades since the last one recorded are
+  minute, jittered -- the SDK's supervisor's work from 0.11.0
+  (`pairs.supervised`, ruling 1027), over the plugin's own WebSocket; each
+  time it opens, the trades since the last one recorded are
   read back from `/products/{id}/trades` (ten pages of 1,000 at most) and
   recorded, so the lake has no hole and a reader catches up from it by the
   watermark it last saw. A trade heard twice -- the history and the stream

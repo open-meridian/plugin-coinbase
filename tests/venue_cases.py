@@ -22,11 +22,11 @@ from pathlib import Path
 from typing import Any
 
 from meridian.edge import RawStore
-from meridian.roles.data.pairs import MAKER, Feed, Market
+from meridian.roles.data.pairs import MAKER, Feed, Market, supervised
 
 from coinbase import page
 from coinbase.convert import CoinbaseMarket
-from coinbase.stream import Replayed, Socket, Stream
+from coinbase.stream import Replayed, Socket
 from coinbase.synthetic import Synthetic
 from coinbase.venue import Coinbase, RateLimiter
 
@@ -35,8 +35,8 @@ __all__ = ["page"]
 PACKAGE = Path(__file__).parent.parent / "src" / "coinbase"
 #: The plugin's own modules no float may reach.
 CONVERSION = (PACKAGE / "convert.py", PACKAGE / "synthetic.py")
-#: The plugin's stream: its own session over its own transport.
-STREAM = Stream
+#: The plugin's stream: the SDK's supervisor over its own socket (0.35).
+STREAM = supervised
 
 SYNTHETIC = PACKAGE / "synthetic"
 
