@@ -13,21 +13,21 @@ It is one of the lake's crypto pair, with
 [meridian-kraken](https://github.com/open-meridian/plugin-kraken): each runs the SDK's
 data suite and its checks for a pairs venue unchanged against its own conversion
 (meridian-design `plans/the-lake-prices-the-book.md`, rows 6 and 19); what the two do alike is
-the SDK's (`meridian.roles.data.pairs`, open-meridian 0.35.1), never copied
+the SDK's (`meridian.roles.data.pairs`, open-meridian 0.36.0), never copied
 between them.
 
-**Status.** 0.11.0, built on open-meridian 0.35.1 (contract v29; from 0.11.0 its work is one class for its role, `Lake` -- the SDK's pairs feed -- registered with `meridian.run`, its stream kept open by the SDK's supervisor; contract v28: its feed delay reported, a crossed quote recorded invalid at the edge; contract v27: the stream's liveness recorded; the data suite's v27 cases; the book's depth kept raw, open question 232; its work the SDK's role helpers), holding the
+**Status.** 0.12.0, built on open-meridian 0.36.0 (contract 30: each dataset describes Coinbase's terms in words and how a gap in it is recovered, no licence declared; contract v29: from 0.11.0 its work is one class for its role, `Lake` -- the SDK's pairs feed -- registered with `meridian.run`, its stream kept open by the SDK's supervisor; contract v28: its feed delay reported, a crossed quote recorded invalid at the edge; contract v27: the stream's liveness recorded; the data suite's v27 cases; the book's depth kept raw, open question 232; its work the SDK's role helpers), holding the
 role `data`.
 
 ## What it does
 
 Three datasets, declared from code in its catalogue (`declaration.py`):
 
-| Dataset | Data | Modes | Day | Coinbase's standard terms |
+| Dataset | Data | Modes | Day | A gap in it |
 |---|---|---|---|---|
-| `<instance>:daily` | a close and a bar per product per day | pull, push | `Etc/UTC`, ending at 00:00 | kept, shown inside the organisation |
-| `<instance>:live` | the last trade's price and the best bid and offer, as prices; the best bid and offer with their sizes, as a quote | pull, stream | `Etc/UTC`, ending at 00:00 | kept two days, shown inside the organisation |
-| `<instance>:trades` | every trade | pull, stream | `Etc/UTC`, ending at 00:00 | kept two days, shown inside the organisation |
+| `<instance>:daily` | a close and a bar per product per day | pull, push | `Etc/UTC`, ending at 00:00 | asked again of Coinbase's candles (`backfill`) |
+| `<instance>:live` | the last trade's price and the best bid and offer, as prices; the best bid and offer with their sizes, as a quote | pull, stream | `Etc/UTC`, ending at 00:00 | not fetched again (`stream_only`) |
+| `<instance>:trades` | every trade | pull, stream | `Etc/UTC`, ending at 00:00 | asked again of Coinbase's trade history (`backfill`) |
 
 - **What the lake wants, recorded.** A reader reads a price nothing has
   recorded; the lake asks this plugin (a want), which records it against the
@@ -186,10 +186,12 @@ A summary, not legal advice; read the terms themselves before relying on
 them. Coinbase Exchange's Market Data Terms allow an organisation to use and
 show Coinbase's market data within itself, and forbid redistributing or
 displaying it outside the organisation, or building applications for other
-end users with it, without Coinbase's written consent. The catalogue's
-standard terms say so (kept, shown, not one person's), and a deployment
-admin confirms or replaces them in the deployment's licence on the Data
-sources page. Nothing here says that a deployment meets Coinbase's terms.
+end users with it, without Coinbase's written consent. From contract 30
+(ruling 1032) each dataset says so in words (`declared.TERMS`), shown on
+Data sources, and declares no licence: a deployment admin sets the
+deployment's licence there (two days kept suits `live` and `trades`); until
+one is set, the lake keeps the rows and reads every use right
+restrictively. Nothing here says that a deployment meets Coinbase's terms.
 
 So **no real Coinbase response is committed** to this public repository: the
 tests and sample data use synthetic exchanges (`src/coinbase/synthetic/`),

@@ -12,18 +12,25 @@ plugin upload`:
   most once a second per subject and kind, pulled for the latest or kept
   current for a standing want; and from contract v19 the best bid and offer
   with their sizes as a quote, kept current from the venue's stream while a
-  standing want stands; kept two days.
+  standing want stands.
 - `trades` (contract v19): every trade, from the venue's stream for the
   subjects under a standing want, or from its REST history for a range
   wanted; declared apart from the live prices, so an admin licenses and
-  keeps them apart (the plan's Q40), kept two days.
+  keeps them apart (the plan's Q40).
 
-Each licence is what Coinbase's standard terms say, which the deployment's
-licence confirms or replaces, never whether a deployment meets them: the
-Market Data Terms let an organisation keep and show Coinbase's market data
-within itself, and forbid redistributing or displaying it outside, or
-building applications for other end users, without Coinbase's written
-consent (README, "Coinbase's terms"; not legal advice).
+**Its terms and pricing** (contract 30, ruling 1032): no dataset declares a
+licence. Each describes Coinbase's Market Data Terms in plain words
+(`TERMS`): an organisation may use and display the data within itself, and
+needs Coinbase's written consent to redistribute it, display it outside, or
+build applications for other end users (README, "Coinbase's terms"; not
+legal advice). The deployment admin sets the deployment's licence on the
+Data sources page, which is the one enforced.
+
+**How a gap is recovered** (W10.14): `daily` and `trades` are `backfill` --
+Coinbase serves candles and trades back in time, and a want of a range is
+answered from them; `live` is `stream_only` -- a ticker or a book as it
+stood is not served again. No dataset names a sessions calendar: Coinbase
+trades around the clock.
 
 `venue_id` is empty: the venue master's ID for Coinbase Exchange is minted by
 the platform, not known to the code a catalogue is declared from, so each row
@@ -39,7 +46,7 @@ Coinbase's public market data needs no key.
 """
 
 import meridian
-from meridian import DatasetDeclaration, DatasetLicence
+from meridian import DatasetDeclaration
 
 VENDOR = "Coinbase"
 SAMPLE_DATA = "sample_data"
@@ -63,6 +70,15 @@ SETTINGS = [
     ),
 ]
 
+#: Coinbase's published terms, in plain words (ruling 1032): the same for each
+#: dataset, all from Coinbase Exchange's public market data.
+TERMS = (
+    "Coinbase Exchange's public market data (REST and WebSocket feed): free, no key or account. "
+    "Coinbase's Market Data Terms let an organisation use and display it within itself. "
+    "Without Coinbase's written consent they forbid redistributing it or displaying it "
+    "outside the organisation, and building applications for other end users with it."
+)
+
 CATALOGUE = [
     DatasetDeclaration(
         key="daily",
@@ -71,7 +87,8 @@ CATALOGUE = [
         modes=["pull", "push"],
         cadence=86_400,
         history=0,
-        licence_default=DatasetLicence(kept=True, derived_use=True, display=True),
+        terms_and_pricing=TERMS,
+        gap_recovery="backfill",
         day_time_zone="Etc/UTC",
         day_end_minute=0,
     ),
@@ -82,7 +99,8 @@ CATALOGUE = [
         modes=["pull", "stream"],
         cadence=1,
         history=0,
-        licence_default=DatasetLicence(kept=True, retention_days=2, display=True),
+        terms_and_pricing=TERMS,
+        gap_recovery="stream_only",
         day_time_zone="Etc/UTC",
         day_end_minute=0,
     ),
@@ -93,7 +111,8 @@ CATALOGUE = [
         modes=["pull", "stream"],
         cadence=1,
         history=0,
-        licence_default=DatasetLicence(kept=True, retention_days=2, display=True),
+        terms_and_pricing=TERMS,
+        gap_recovery="backfill",
         day_time_zone="Etc/UTC",
         day_end_minute=0,
     ),

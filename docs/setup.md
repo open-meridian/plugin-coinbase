@@ -8,13 +8,13 @@ storage for its raw responses, and no key.
 ## 2. License its datasets
 
 On the dashboard's **Data sources** page, each of the plugin's three datasets
-is listed with the terms Coinbase's standard terms impose:
-
-- `<instance>:daily`: kept, shown inside your organisation.
-- `<instance>:live`: kept two days, shown inside your organisation.
-- `<instance>:trades`: kept two days, shown inside your organisation.
-
-Confirm or change each licence there, with a note saying why. What you enter
+-- `<instance>:daily`, `<instance>:live` and `<instance>:trades` -- is listed
+with Coinbase's Market Data Terms described in words: use and display
+inside your organisation; redistribution, display outside it and
+applications for other end users need Coinbase's written consent. The
+plugin declares no licence. Set each licence there, with a note saying why
+(two days kept suits `live` and `trades`); until one is set, the lake keeps
+the rows and reads every use right restrictively. What you enter
 is what your deployment records; it is not a statement that your use meets
 Coinbase's terms (see [Terms](terms.md)).
 
