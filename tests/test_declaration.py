@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 from coinbase.declaration import DECLARATION
-from coinbase.declared import CATALOGUE, SAMPLE_DATA
+from coinbase.declared import CATALOGUE, SAMPLE_DATA, TERMS
 
 
 def test_three_datasets_daily_live_and_trades_on_the_utc_day() -> None:
@@ -25,11 +25,12 @@ def test_three_datasets_daily_live_and_trades_on_the_utc_day() -> None:
     assert list(daily.data_types) == ["meridian.v1.Price", "meridian.v1.Bar"]
     assert list(live.data_types) == ["meridian.v1.Price", "meridian.v1.Quote"]
     assert list(trades.data_types) == ["meridian.v1.Trade"], "trades apart from live prices"
-    assert daily.licence_default and daily.licence_default.kept
-    for kept_two_days in (live, trades):
-        licence = kept_two_days.licence_default
-        assert licence and licence.kept and licence.retention_days == 2
-    assert not any(d.licence_default and d.licence_default.personal_use for d in CATALOGUE)
+    # Contract 30 (ruling 1032): Coinbase's terms in words, no licence; a gap
+    # is asked again where Coinbase serves history.
+    assert {d.terms_and_pricing for d in CATALOGUE} == {TERMS}
+    assert "written consent" in TERMS and len(TERMS) <= 2000
+    assert [d.gap_recovery for d in CATALOGUE] == ["backfill", "stream_only", "backfill"]
+    assert not any(d.sessions_calendar_id for d in CATALOGUE), "it trades around the clock"
 
 
 def test_no_key_needed_and_sample_data_a_developers_setting() -> None:

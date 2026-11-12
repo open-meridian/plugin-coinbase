@@ -10,9 +10,9 @@ Coinbase's market data within itself. Without Coinbase's written consent,
 they forbid redistributing or displaying it outside the organisation, and
 building applications for other end users with it.
 
-The plugin's datasets declare those standard terms (kept, shown, not one
-person's), and your deployment's licence on the Data sources page confirms or
-replaces them. The plugin and its documentation never say that a deployment
+Each of the plugin's datasets describes those terms in words on the Data
+sources page, and declares no licence: your deployment's licence there is
+the one enforced. The plugin and its documentation never say that a deployment
 meets Coinbase's terms.
 
 ## Your due diligence
